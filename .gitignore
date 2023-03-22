@@ -1,5 +1,4 @@
 # Binaries for programs and plugins
-*.exe
 *.exe~
 *.dll
 *.so
@@ -12,4 +11,10 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+tester*/
+
+cmd/*/*.json
+cmd/*/*.yaml
+cmd/*/*.xml
+cmd/*/*.exe
