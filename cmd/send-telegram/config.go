@@ -30,7 +30,7 @@ func (c *Config) Init() (bool, error) {
 		if err != nil {
 			return true, err
 		}
-		if err := config.Unmarshal(JSON, content); err != nil {
+		if err := c.Unmarshal(JSON, content); err != nil {
 			return true, err
 		}
 	case utils.IsStatFile("send-telegram.xml"):
@@ -38,7 +38,7 @@ func (c *Config) Init() (bool, error) {
 		if err != nil {
 			return true, err
 		}
-		if err := config.Unmarshal(XML, content); err != nil {
+		if err := c.Unmarshal(XML, content); err != nil {
 			return true, err
 		}
 	case utils.IsStatFile("send-telegram.yaml"):
@@ -46,7 +46,7 @@ func (c *Config) Init() (bool, error) {
 		if err != nil {
 			return true, err
 		}
-		if err := config.Unmarshal(YAML, content); err != nil {
+		if err := c.Unmarshal(YAML, content); err != nil {
 			return true, err
 		}
 	}
