@@ -5,7 +5,8 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
+	"path/filepath"
 	"util-send-telega/internal/utils"
 
 	"gopkg.in/yaml.v2"
@@ -24,25 +25,26 @@ type Config struct {
 }
 
 func (c *Config) Init() (bool, error) {
+	rp, _ := os.Executable()
 	switch {
-	case utils.IsStatFile("send-telegram.json"):
-		content, err := ioutil.ReadFile("send-telegram.json")
+	case utils.IsStatFile(filepath.Join(filepath.Dir(rp), "send-telegram.json")):
+		content, err := os.ReadFile(filepath.Join(filepath.Dir(rp), "send-telegram.json"))
 		if err != nil {
 			return true, err
 		}
 		if err := c.Unmarshal(JSON, content); err != nil {
 			return true, err
 		}
-	case utils.IsStatFile("send-telegram.xml"):
-		content, err := ioutil.ReadFile("send-telegram.xml")
+	case utils.IsStatFile(filepath.Join(filepath.Dir(rp), "send-telegram.xml")):
+		content, err := os.ReadFile(filepath.Join(filepath.Dir(rp), "send-telegram.xml"))
 		if err != nil {
 			return true, err
 		}
 		if err := c.Unmarshal(XML, content); err != nil {
 			return true, err
 		}
-	case utils.IsStatFile("send-telegram.yaml"):
-		content, err := ioutil.ReadFile("send-telegram.yaml")
+	case utils.IsStatFile(filepath.Join(filepath.Dir(rp), "send-telegram.yaml")):
+		content, err := os.ReadFile(filepath.Join(filepath.Dir(rp), "send-telegram.yaml"))
 		if err != nil {
 			return true, err
 		}

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"util-send-telega/internal/telegram"
@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	config          Config
-	msg, photo, doc string
+	config                  Config
+	status, msg, photo, doc string
 )
 
 func init() {
@@ -22,6 +22,11 @@ func init() {
 	if ok, err := config.Init(); ok && err != nil {
 		log.Printf("warning read config file: %v", err)
 	}
+
+	info := flag.Bool("info", false, "status info")
+	warn := flag.Bool("warn", false, "status warning")
+	err := flag.Bool("err", false, "status error")
+	crit := flag.Bool("critic", false, "status critical")
 
 	example := flag.Bool("example", false, "create example config (*.yaml)")
 	mute := flag.Bool("mute", false, "mute log")
@@ -51,14 +56,25 @@ func init() {
 	}
 
 	if *mute {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
+	}
+
+	switch {
+	case *info:
+		status = "✅ "
+	case *warn:
+		status = "⚠️ "
+	case *err:
+		status = "⛔️ "
+	case *crit:
+		status = "🆘 "
 	}
 }
 
 func main() {
 	telega := telegram.New(&config.Telegram)
 	if len(photo) > 0 {
-		if err := telega.SendPhoto(photo, msg); err != nil {
+		if err := telega.SendPhoto(photo, status+msg); err != nil {
 			log.Fatalf("error send photo: %v\n", err)
 			return
 		}
@@ -66,14 +82,14 @@ func main() {
 		return
 	}
 	if len(doc) > 0 {
-		if err := telega.SendDoc(doc, msg); err != nil {
+		if err := telega.SendDoc(doc, status+msg); err != nil {
 			log.Fatalf("error send document: %v\n", err)
 			return
 		}
 		log.Println("document sent ok.")
 		return
 	}
-	if err := telega.SendMsg(msg); err != nil {
+	if err := telega.SendMsg(status + msg); err != nil {
 		log.Fatalf("error send message: %v\n", err)
 		return
 	}
